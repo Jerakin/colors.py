@@ -75,10 +75,10 @@ class TestColorsArithmetic(unittest.TestCase):
         self.assertTrue(hex('aaffcc').subtract(rgb(10, 10, 10)) == rgb(160, 245, 194), "Subtracting color values with function")
 
     def test_color_dividing_operator(self):
-        self.assertTrue(hex('ff9999') / rgb(10, 10, 10) == rgb(25.5, 15.3, 15.3), "Dividing color values with operator")
+        self.assertTrue(hex('ff9999') / rgb(10, 10, 10) == rgb(26, 15, 15), "Dividing color values with operator")
 
     def test_color_dividing_function(self):
-        self.assertTrue(hex('aaffcc').divide(rgb(10, 10, 10)) == rgb(17, 25.5, 20.4), "Dividing color values with function")
+        self.assertTrue(hex('aaffcc').divide(rgb(10, 10, 10)) == rgb(17, 26, 20), "Dividing color values with function")
 
     def test_zero_division(self):
         with self.assertRaises(ZeroDivisionError):

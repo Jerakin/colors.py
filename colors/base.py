@@ -174,9 +174,9 @@ class RGBColor(Color):
     """ Red Green Blue """
 
     def __init__(self, r=0, g=0, b=0):
-        self._color = r, g, b
+        self._color = round(r), round(g), round(b)
         for c in self._color:
-            if c < 0 or c > 255:
+            if 0 > c > 255:
                 raise ValueError('Color values must be between 0 and 255')
 
     @property
@@ -224,7 +224,7 @@ class HexColor(RGBColor):
 
 
 class ColorWheel(object):
-    """ Iterate random colors disributed relatively evenly around the color wheel."""
+    """ Iterate random colors distributed relatively evenly around the color wheel."""
     def __init__(self, start=0):
         # A 1.1 shift is identical to 0.1
         if start >= 1:
