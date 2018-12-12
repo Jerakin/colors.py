@@ -124,16 +124,7 @@ class Color(object):
         return not self.__eq__(other)
 
     def __iter__(self):
-        """ Treat the color object as an iterable to iterate over color values
-        Allows mapping such as:
-
-        >>> list(rgb(100, 50, 0))
-        [100, 50, 0]
-        >>> for i in rgb(100, 50, 0): print(i)
-        100
-        50
-        0
-        """
+        """ Treat the color object as an iterable to iterate over color values"""
         return iter(self._color)
 
     def __len__(self):
@@ -233,19 +224,7 @@ class HexColor(RGBColor):
 
 
 class ColorWheel(object):
-    """ Iterate random colors disributed relatively evenly
-    around the color wheel.
-
-    >>> from colors import ColorWheel
-    >>> wheel = ColorWheel()
-    >>> print('#{}'.format(wheel.next().hex))
-    #cc8b00
-    >>> wheel = ColorWheel(start=0.2)
-    >>> print('#{}'.format(wheel.next().hex))
-    #00cc26
-    >>> print('#{}'.format(wheel.next().hex))
-    #009ecc
-    """
+    """ Iterate random colors disributed relatively evenly around the color wheel."""
     def __init__(self, start=0):
         # A 1.1 shift is identical to 0.1
         if start >= 1:
@@ -264,15 +243,7 @@ class ColorWheel(object):
 
 
 def random():  # This name might be a bad idea?
-    """ Generate a random color.
-
-    >>> from colors import random
-    >>> random()
-    <HSVColor hue: 0.310089903395, saturation: 0.765033516918, value: 0.264921257867>
-    >>> print('#{}'.format(random().hex))
-    #ae47a7
-
-    """
+    """ Generate a random color."""
     return HSVColor(random_.random(), random_.random(), random_.random())
 
 
