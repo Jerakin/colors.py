@@ -1,5 +1,5 @@
 import unittest
-from colors import rgb, hsv, hex, random
+from colors import rgb, hsv, hex, random, RGBFloatColor
 
 
 class TestColors(unittest.TestCase):
@@ -53,6 +53,22 @@ class TestColors(unittest.TestCase):
     def test_color_equality(self):
         self.assertTrue(rgb(100, 100, 100) == hex('646464'), "Color's are not equal")
         self.assertTrue(hsv(0, 1, 1) == rgb(255, 0, 0), "Color's are not equal")
+
+    def test_rgb_float_color_object(self):
+        colors = RGBFloatColor(1, 1, 1)
+        self.assertTrue(colors.red == 1 and colors.green == 1 and colors.blue == 1, "RGB Color object")
+
+    def test_RGBFloatColor_equality(self):
+        self.assertTrue(RGBFloatColor(1, 1, 1) == rgb(255, 255, 255), "RGB Color object")
+
+    def test_HexColor_float(self):
+        self.assertTrue(RGBFloatColor(1, 0, 0) == hex("FF0000").float, "hex.float equals RGBFloat")
+
+    def test_RGBColor_float(self):
+        self.assertTrue(RGBFloatColor(1, 1, 1) == rgb(255, 255, 255).float, "RGB.float equals RGBFloat")
+
+    def test_HSVColor_float(self):
+        self.assertTrue(RGBFloatColor(1, 0, 0) == hsv(0, 1, 1).float, "HSV.float equals RGBFloat")
 
 
 class TestColorsArithmetic(unittest.TestCase):

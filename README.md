@@ -52,6 +52,16 @@ Convert colors between rgb, hsv, and hex, perform arithmetic, blend modes, and g
 >>> hsv(0, 1, 1).rgb
 <RGBColor red: 255, green: 0, blue: 0>
 ```
+### Create an float RGB color object
+```python
+>>> RGBFloatColor(0.5, 0.5, 0.5)
+<RGBFloatColor red: 0.5, green: 0.5, blue: 0.5>
+```
+### Convert it to RGB
+```python
+>>> RGBFloatColor(0.5, 0.5, 0.5).rgb
+<RGBColor red: 128, green: 128, blue: 128>
+```
 ### Gimme a random color, any color!
 ```python
 >>> random()

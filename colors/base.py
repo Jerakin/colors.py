@@ -8,7 +8,7 @@ from __future__ import print_function
 import colorsys
 import random as random_
 
-__all__ = ('Color', 'HSVColor', 'RGBColor', 'HexColor', 'ColorWheel',
+__all__ = ('Color', 'HSVColor', 'RGBColor', "RGBFloatColor", 'HexColor', 'ColorWheel',
            'rgb', 'hsv', 'hex', 'random')
 
 HEX_RANGE = frozenset('0123456789abcdef')
@@ -165,6 +165,10 @@ class HSVColor(Color):
     def hsv(self):
         return self
 
+    @property
+    def float(self):
+        return RGBFloatColor(*map(lambda c: c, colorsys.hsv_to_rgb(*self._color)))
+
     class Meta:
         properties = ('hue', 'saturation', 'value')
 
@@ -186,6 +190,35 @@ class RGBColor(Color):
     @property
     def hsv(self):
         return HSVColor(*colorsys.rgb_to_hsv(*map(lambda c: c / 255.0, self._color)))
+
+    @property
+    def float(self):
+        return RGBFloatColor(*map(lambda c: c / 255.0, self._color))
+
+    class Meta:
+        properties = ('red', 'green', 'blue')
+
+
+@color_decorator
+class RGBFloatColor(Color):
+    """ Red Green Blue colors represented in a 0-1 values """
+    def __init__(self, r=0, g=0, b=0):
+        self._color = r, g, b
+        for c in self._color:
+            if 0 > c > 1:
+                raise ValueError('Color values must be between 0 and 1')
+
+    @property
+    def hsv(self):
+        return HSVColor(*colorsys.rgb_to_hsv(*map(lambda c: c, self._color)))
+
+    @property
+    def rgb(self):
+        return self.hsv.rgb
+
+    @property
+    def float(self):
+        return self
 
     class Meta:
         properties = ('red', 'green', 'blue')
@@ -219,6 +252,10 @@ class HexColor(RGBColor):
     def hex(self):
         return self
 
+    @property
+    def float(self):
+        return RGBFloatColor(*[int(c, 16)/255.0 for c in self._color])
+
     def __str__(self):
         return '{}{}{}'.format(*self._color)
 
@@ -250,4 +287,4 @@ def random():  # This name might be a bad idea?
 # Simple aliases
 rgb = RGBColor  # rgb(100, 100, 100), or rgb(r=100, g=100, b=100)
 hsv = HSVColor  # hsv(0.5, 1, 1), or hsv(h=0.5, s=1, v=1)
-hex = HexColor  # hex('BADA55')
+hex = HexColor  # hex('bada55')
