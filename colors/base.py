@@ -8,8 +8,7 @@ from __future__ import print_function
 import colorsys
 import random as random_
 
-__all__ = ('Color', 'HSVColor', 'RGBColor', "RGBFloatColor", 'HexColor', 'ColorWheel',
-           'rgb', 'hsv', 'hex', 'random')
+__all__ = ('Color', 'HSVColor', 'RGBColor', "RGBFloatColor", 'HexColor', 'ColorWheel', 'random_color')
 
 HEX_RANGE = frozenset('0123456789abcdef')
 
@@ -279,12 +278,6 @@ class ColorWheel(object):
         return HSVColor(self._phase, 1, 0.8)
 
 
-def random():  # This name might be a bad idea?
+def random_color():
     """ Generate a random color."""
-    return HSVColor(random_.random(), random_.random(), random_.random())
-
-
-# Simple aliases
-rgb = RGBColor  # rgb(100, 100, 100), or rgb(r=100, g=100, b=100)
-hsv = HSVColor  # hsv(0.5, 1, 1), or hsv(h=0.5, s=1, v=1)
-hex = HexColor  # hex('bada55')
+    return RGBFloatColor(random_.random(), random_.random(), random_.random())

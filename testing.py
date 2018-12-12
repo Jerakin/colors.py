@@ -1,5 +1,9 @@
 import unittest
-from colors import rgb, hsv, hex, random, RGBFloatColor
+from colors import RGBColor, HSVColor, HexColor, RGBFloatColor, random_color
+
+rgb = RGBColor
+hsv = HSVColor
+hex = HexColor
 
 
 class TestColors(unittest.TestCase):
@@ -41,13 +45,13 @@ class TestColors(unittest.TestCase):
         self.assertTrue(colors.red == 255 and colors.green == 0 and colors.blue == 0, "RGB Color object")
 
     def test_coerce_object_to_string(self):
-        colors = random().rgb
+        colors = random_color().rgb
         strings = 'style="color: rgb({})"'.format(colors)
         self.assertTrue(strings == 'style="color: rgb({}, {}, {})"'.format(*list(colors)), "RGB Color object")
 
     def test_random_colors(self):
-        colors1 = random()
-        colors2 = random()
+        colors1 = random_color()
+        colors2 = random_color()
         self.assertFalse(colors1 == colors2, "Duplicated random colors")
 
     def test_color_equality(self):
