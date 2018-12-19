@@ -177,14 +177,27 @@ class HSVColor(Color):
 class RGBColor(Color):
     """ Red Green Blue """
 
-    def __init__(self, r=0, g=0, b=0):
-        self._color = round(r), round(g), round(b)
+    def __init__(self, r=0, g=0, b=0, a=None):
+        if not a:
+            self._color = round(r), round(g), round(b)
+        else:
+            self._color = round(r), round(g), round(b), round(a)
         for c in self._color:
             if 0 > c > 255:
                 raise ValueError('Color values must be between 0 and 255')
+        self._is_premultiplied = False
+
+    def premultiply(self):
+        self.alpha = 255 if self.alpha is None else self.alpha
+        self._is_premultiplied = True
+        self._color[0] *= self.alpha
+        self._color[1] *= self.alpha
+        self._color[2] *= self.alpha
 
     @property
     def rgb(self):
+        if self.alpha and self.premultiply:
+            return ()
         return self
 
     @property
@@ -196,17 +209,28 @@ class RGBColor(Color):
         return RGBFloatColor(*map(lambda c: c / 255.0, self._color))
 
     class Meta:
-        properties = ('red', 'green', 'blue')
+        properties = ('red', 'green', 'blue', 'alpha')
 
 
 @color_decorator
 class RGBFloatColor(Color):
     """ Red Green Blue colors represented in a 0-1 values """
-    def __init__(self, r=0, g=0, b=0):
-        self._color = r, g, b
+    def __init__(self, r=0, g=0, b=0, a=None):
+        if not a:
+            self._color = r, g, b
+        else:
+            self._color = r, g, b, a
         for c in self._color:
             if 0 > c > 1:
                 raise ValueError('Color values must be between 0 and 1')
+        self.is_premultiplied = False
+
+    def premultiply(self):
+        if not len(self._color) == 4:
+            raise TypeError("Color without alpha can\'t be premultiplied")
+        c = RGBFloatColor(self._color[0] * self.alpha, self._color[0] * self.alpha, self._color[0] * self.alpha, self.alpha)
+        c.is_premultiplied = True
+        return c
 
     @property
     def hsv(self):
@@ -221,7 +245,7 @@ class RGBFloatColor(Color):
         return self
 
     class Meta:
-        properties = ('red', 'green', 'blue')
+        properties = ('red', 'green', 'blue', 'alpha')
 
 
 class HexColor(RGBColor):
@@ -288,3 +312,8 @@ def random():  # This name might be a bad idea?
 rgb = RGBColor  # rgb(100, 100, 100), or rgb(r=100, g=100, b=100)
 hsv = HSVColor  # hsv(0.5, 1, 1), or hsv(h=0.5, s=1, v=1)
 hex = HexColor  # hex('bada55')
+
+color = RGBFloatColor(1, 1, 1, .5)
+print(color)
+color = color.premultiply()
+print(color)
