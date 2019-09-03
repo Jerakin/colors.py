@@ -271,12 +271,14 @@ class ColorWheel(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         shift = (random_.random() * 0.1) + 0.1
         self._phase += shift
         if self._phase >= 1:
             self._phase -= 1
         return HSVColor(self._phase, 1, 0.8)
+
+    next = __next__  # for Python 2
 
 
 def random():  # This name might be a bad idea?

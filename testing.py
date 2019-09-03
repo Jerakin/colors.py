@@ -49,10 +49,11 @@ class TestColors(unittest.TestCase):
         colors1 = random()
         colors2 = random()
         self.assertFalse(colors1 == colors2, "Duplicated random colors")
+        self.assertTrue(len(str(random().hex)) == 6, "Docs example, `.hex` is a string, not prefixed with `#`")
 
     def test_color_equality(self):
-        self.assertTrue(rgb(100, 100, 100) == hex('646464'), "Color's are not equal")
-        self.assertTrue(hsv(0, 1, 1) == rgb(255, 0, 0), "Color's are not equal")
+        self.assertTrue(rgb(100, 100, 100) == hex('646464'), "Colors are not equal")
+        self.assertTrue(hsv(0, 1, 1) == rgb(255, 0, 0), "Colors are not equal")
 
     def test_rgb_float_color_object(self):
         colors = RGBFloatColor(1, 1, 1)
@@ -60,6 +61,8 @@ class TestColors(unittest.TestCase):
 
     def test_RGBFloatColor_equality(self):
         self.assertTrue(RGBFloatColor(1, 1, 1) == rgb(255, 255, 255), "RGB Color object")
+        self.assertTrue(RGBFloatColor(0.5, 0.5, 0.5) == rgb(128, 128, 128),  "RGB Color object; docs example")
+        self.assertTrue(RGBFloatColor(0.5, 0.5, 0.5).rgb == rgb(128, 128, 128),  "RGB Color object; docs example #2")
 
     def test_HexColor_float(self):
         self.assertTrue(RGBFloatColor(1, 0, 0) == hex("FF0000").float, "hex.float equals RGBFloat")
@@ -115,3 +118,30 @@ class TestColorsBlendModes(unittest.TestCase):
 
     def test_invert(self):
         self.assertTrue(hex('000000').invert() == rgb(255, 255, 255), "Inverting values")
+
+
+class TestColorsPalettes(unittest.TestCase):
+    def test_primary(self):
+        import colors.primary
+        self.assertTrue(colors.primary.red == rgb(255, 0, 0), "RGB Color object")
+
+    def test_rainbow(self):
+        import colors.rainbow
+        self.assertTrue(colors.rainbow.indigo == rgb(75, 0, 130), "RGB Color object")
+
+    def test_w3c(self):
+        import colors.w3c
+        self.assertTrue(colors.w3c.ghostwhite == rgb(248, 248, 255), "RGB Color object")
+
+
+class TestColorWheel(unittest.TestCase):
+
+    def test_wheel(self):
+        from colors import ColorWheel
+        wheel = ColorWheel()
+        _iteration = 0
+        for color in wheel:
+            self.assertTrue(len(str(color.hex)) == 6, "Docs example, `.hex` is a string, not prefixed with `#`")
+            _iteration += 1
+            if _iteration >= 10:
+                break
