@@ -1,7 +1,13 @@
+## Changes from mattrobenolt/colors.py
+_These changes are still not in the main repo_
+* Test suite 
+* Support for Python 3
+* Using decorators instead of metaclass (to keep it simple)
+
 # colors.py
 Convert colors between rgb, hsv, and hex, perform arithmetic, blend modes, and generate random colors within boundaries
 ## Installation
-```$ pip install colors.py```
+```$ pip install https://github.com/Jerakin/colors.py/archive/master.zip```
 ## Basic Uses
 ### Importing
 ```python
