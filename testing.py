@@ -1,5 +1,9 @@
 import unittest
-from colors import rgb, hsv, hex, random, RGBFloatColor
+from colors import RGBColor as rgb
+from colors import HSVColor as hsv
+from colors import HexColor as hex
+from colors import random
+from colors import RGBFloatColor as rgbf
 
 
 class TestColors(unittest.TestCase):
@@ -7,9 +11,48 @@ class TestColors(unittest.TestCase):
         colors = rgb(100, 100, 100)
         self.assertTrue(colors.red == 100 and colors.green == 100 and colors.blue == 100, "RGB Color object")
 
+    def test_rgb_value_error(self):
+        with self.assertRaises(ValueError):
+            rgb(300, 300, 300)
+
     def test_converting_rgb_to_hexadecimal(self):
         colors = rgb(100, 100, 100).hex
         self.assertTrue(colors.red == "64" and colors.green == "64" and colors.blue == "64", "Converting rgb to hex")
+
+    def test_rgbf(self):
+        colors = rgbf(1, 0, 1).float
+        self.assertTrue(colors.red == 1.0 and colors.green == 0.0 and colors.blue == 1.0, "Testing float")
+
+    def test_hex(self):
+        colors = hex('646464').hex
+        self.assertTrue(colors.red == "64" and colors.green == "64" and colors.blue == "64", "Testing hex")
+
+    def test_hsv(self):
+        colors = hsv(0, 1, 1).hsv
+        self.assertTrue(colors.hue == 0 and colors.saturation == 1 and colors.value == 1, "HSV Color object")
+
+    def test_hsv_value_error_s(self):
+        with self.assertRaises(ValueError):
+            hsv(0, 2, 1)
+
+    def test_hsv_value_error_v(self):
+        with self.assertRaises(ValueError):
+            hsv(0, 1, 2)
+
+    def test_hsv_hue_circle(self):
+        self.assertTrue(hsv(2, 1, 1).hue == 0, "Testing Hue circling")
+
+    def test_hex_value_error_len(self):
+        with self.assertRaises(ValueError):
+            hex("#646464")
+
+    def test_hex_value_error_is_string(self):
+        with self.assertRaises(ValueError):
+            hex(646464)
+
+    def test_hex_value_error_is_valid_hex(self):
+        with self.assertRaises(ValueError):
+            hex("offfff")
 
     def test_converting_hexadecimal_to_string(self):
         colors = str(rgb(100, 100, 100).hex)
@@ -53,25 +96,29 @@ class TestColors(unittest.TestCase):
 
     def test_color_equality(self):
         self.assertTrue(rgb(100, 100, 100) == hex('646464'), "Colors are not equal")
-        self.assertTrue(hsv(0, 1, 1) == rgb(255, 0, 0), "Colors are not equal")
+        self.assertTrue(hex("ffffff") != rgb(255, 255, 0), "Colors are equal")
 
     def test_rgb_float_color_object(self):
-        colors = RGBFloatColor(1, 1, 1)
+        colors = rgbf(1, 1, 1)
         self.assertTrue(colors.red == 1 and colors.green == 1 and colors.blue == 1, "RGB Color object")
 
     def test_RGBFloatColor_equality(self):
-        self.assertTrue(RGBFloatColor(1, 1, 1) == rgb(255, 255, 255), "RGB Color object")
-        self.assertTrue(RGBFloatColor(0.5, 0.5, 0.5) == rgb(128, 128, 128),  "RGB Color object; docs example")
-        self.assertTrue(RGBFloatColor(0.5, 0.5, 0.5).rgb == rgb(128, 128, 128),  "RGB Color object; docs example #2")
+        self.assertTrue(rgbf(1, 1, 1) == rgb(255, 255, 255), "RGB Color object")
+        self.assertTrue(rgbf(0.5, 0.5, 0.5) == rgb(128, 128, 128),  "RGB Color object; docs example")
+        self.assertTrue(rgbf(0.5, 0.5, 0.5).rgb == rgb(128, 128, 128),  "RGB Color object; docs example #2")
 
     def test_HexColor_float(self):
-        self.assertTrue(RGBFloatColor(1, 0, 0) == hex("FF0000").float, "hex.float equals RGBFloat")
+        self.assertTrue(rgbf(1, 0, 0) == hex("FF0000").float, "hex.float equals RGBFloat")
 
     def test_RGBColor_float(self):
-        self.assertTrue(RGBFloatColor(1, 1, 1) == rgb(255, 255, 255).float, "RGB.float equals RGBFloat")
+        self.assertTrue(rgbf(1, 1, 1) == rgb(255, 255, 255).float, "RGB.float equals RGBFloat")
 
     def test_HSVColor_float(self):
-        self.assertTrue(RGBFloatColor(1, 0, 0) == hsv(0, 1, 1).float, "HSV.float equals RGBFloat")
+        self.assertTrue(rgbf(1, 0, 0) == hsv(0, 1, 1).float, "HSV.float equals RGBFloat")
+
+    def test_RGBFloatColor_value_error(self):
+        with self.assertRaises(ValueError):
+            rgbf(300.0, 300.0, 300.0)
 
 
 class TestColorsArithmetic(unittest.TestCase):
@@ -135,7 +182,6 @@ class TestColorsPalettes(unittest.TestCase):
 
 
 class TestColorWheel(unittest.TestCase):
-
     def test_wheel(self):
         from colors import ColorWheel
         wheel = ColorWheel()
@@ -145,3 +191,8 @@ class TestColorWheel(unittest.TestCase):
             _iteration += 1
             if _iteration >= 10:
                 break
+
+
+if __name__ == '__main__':
+    unittest.main()
+
