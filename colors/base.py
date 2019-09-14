@@ -180,7 +180,7 @@ class RGBColor(Color):
     def __init__(self, r=0, g=0, b=0):
         self._color = round(r), round(g), round(b)
         for c in self._color:
-            if 0 > c > 255:
+            if 0 > c or c > 255:
                 raise ValueError('Color values must be between 0 and 255')
 
     @property
@@ -205,7 +205,7 @@ class RGBFloatColor(Color):
     def __init__(self, r=0, g=0, b=0):
         self._color = r, g, b
         for c in self._color:
-            if 0 > c > 1:
+            if 0 > c or c > 1:
                 raise ValueError('Color values must be between 0 and 1')
 
     @property
@@ -231,6 +231,9 @@ class HexColor(RGBColor):
     """
 
     def __init__(self, hex='000000'):
+        if not type(hex) == str:
+            raise ValueError("Hex must be string")
+
         if len(hex) != 6:
             raise ValueError('Hex color must be 6 digits')
 
