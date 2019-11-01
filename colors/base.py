@@ -17,9 +17,9 @@ HEX_RANGE = frozenset('0123456789abcdef')
 def color_decorator(cls):
     attributes = cls.__dict__
     if 'Meta' in attributes and hasattr(attributes['Meta'], 'properties'):
-        for index, prop in enumerate(attributes['Meta'].properties):
+        for _index, prop in enumerate(attributes['Meta'].properties):
             # Assign pretty getters to each property name
-            setattr(cls, prop, property(lambda self, index=index: self._color[index]))
+            setattr(cls, prop, property(lambda self, index=_index: self._color[index]))
     return cls
 
 
@@ -113,9 +113,7 @@ class Color(object):
     def __eq__(self, other):
         self_rgb = self.rgb
         other_rgb = other.rgb
-        return self_rgb.red == other_rgb.red \
-           and self_rgb.green == other_rgb.green \
-           and self_rgb.blue == other_rgb.blue
+        return self_rgb.red == other_rgb.red and self_rgb.green == other_rgb.green and self_rgb.blue == other_rgb.blue
 
     def __contains__(self, item):
         return item in self._color
@@ -145,7 +143,7 @@ class Color(object):
 class HSVColor(Color):
     """ Hue Saturation Value """
 
-    def __init__(self, h=0, s=0, v=0):
+    def __init__(self, h=0.0, s=0.0, v=0.0):
         if s > 1:
             raise ValueError('Saturation has to be less than 1')
         if v > 1:
@@ -175,7 +173,7 @@ class HSVColor(Color):
 
 @color_decorator
 class RGBColor(Color):
-    """ Red Green Blue """
+    """ Red Green Blue colors represented in a 0 - 255 range"""
 
     def __init__(self, r=0, g=0, b=0):
         self._color = round(r), round(g), round(b)
@@ -189,11 +187,11 @@ class RGBColor(Color):
 
     @property
     def hsv(self):
-        return HSVColor(*colorsys.rgb_to_hsv(*map(lambda c: c / 255.0, self._color)))
+        return HSVColor(*colorsys.rgb_to_hsv(*map(lambda c: c / 255, self._color)))
 
     @property
     def float(self):
-        return RGBFloatColor(*map(lambda c: c / 255.0, self._color))
+        return RGBFloatColor(*map(lambda c: c / 255, self._color))
 
     class Meta:
         properties = ('red', 'green', 'blue')
@@ -201,8 +199,8 @@ class RGBColor(Color):
 
 @color_decorator
 class RGBFloatColor(Color):
-    """ Red Green Blue colors represented in a 0-1 values """
-    def __init__(self, r=0, g=0, b=0):
+    """ Red Green Blue colors represented in a 0-1 range """
+    def __init__(self, r=0.0, g=0.0, b=0.0):
         self._color = r, g, b
         for c in self._color:
             if 0 > c or c > 1:
@@ -230,18 +228,18 @@ class HexColor(RGBColor):
     Warning: accuracy is lost when converting a color to hex
     """
 
-    def __init__(self, hex='000000'):
-        if not type(hex) == str:
+    def __init__(self, _hex='000000'):
+        if not type(_hex) == str:
             raise ValueError("Hex must be string")
 
-        if len(hex) != 6:
+        if len(_hex) != 6:
             raise ValueError('Hex color must be 6 digits')
 
-        hex = hex.lower()
-        if not set(hex).issubset(HEX_RANGE):
+        _hex = _hex.lower()
+        if not set(_hex).issubset(HEX_RANGE):
             raise ValueError('Not a valid hex number')
 
-        self._color = hex[:2], hex[2:4], hex[4:6]
+        self._color = _hex[:2], _hex[2:4], _hex[4:6]
 
     @property
     def rgb(self):
@@ -291,5 +289,6 @@ def random():  # This name might be a bad idea?
 
 # Simple aliases
 rgb = RGBColor  # rgb(100, 100, 100), or rgb(r=100, g=100, b=100)
+rgbf = RGBFloatColor  # rgb(100, 100, 100), or rgb(r=100, g=100, b=100)
 hsv = HSVColor  # hsv(0.5, 1, 1), or hsv(h=0.5, s=1, v=1)
 hex = HexColor  # hex('bada55')

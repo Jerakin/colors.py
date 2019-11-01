@@ -6,6 +6,6 @@ and generate random colors within boundaries.
 """
 from .base import *
 
-__version__ = '0.2.2'
+__version__ = '0.3.4'
 __author__ = 'Matt Robenolt <matt@ydekproductions.com>'
 __license__ = 'BSD'
