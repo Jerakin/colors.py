@@ -5,13 +5,16 @@ _These changes are still not in the main repo_
 * [#9](https://github.com/mattrobenolt/colors.py/pull/9) Using decorators instead of metaclass (to keep it simple)
 * [#10](https://github.com/mattrobenolt/colors.py/pull/10) RGBColor is strictly 24bit (rounds the rgb input to)
 * Added RGBFloatColor that represent colors in a 0.0 - 1.0 range
-### Versions
 
-``
 # colors.py
 Convert colors between rgb, hsv, and hex, perform arithmetic, blend modes, and generate random colors within boundaries
 ## Installation
+Either grab the version explicit or use master.  
 ```$ pip install https://github.com/Jerakin/colors.py/archive/master.zip```
+
+Latest release is _"[0.3.4](https://github.com/Jerakin/colors.py/releases/tag/0.3.4) added alias for RGBFloat `rgbf`"_  
+* `pip install https://github.com/Jerakin/colors.py/releases/download/0.3.4/colors.py-0.3.4-py2.py3-none-any.whl`
+
 ## Basic Uses
 ### Importing
 The package exposes the aliases `rgb`, `rgbf`, `hsv` and importantly `random` and `hex`. Hex clashes with the builtin
