@@ -21,12 +21,12 @@ Source = "https://github.com/jerakin/colors.py"
 
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 
 [tool.hatch.version]
-path = "colors/__init__.py"
+source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["/colors"]
