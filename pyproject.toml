@@ -1,0 +1,40 @@
+[project]
+name = "colors.py"
+description = "Convert colors between rgb, hsv, and hex, perform arithmetic, blend modes, and generate random colors within boundaries."
+readme = "README.md"
+license = {file = "LICENSE"}
+maintainers = [{name = "Matt Robenolt", email = "matt@ydekproductions.com"}, {name = "Jerakin", email = "the_rensvind@hotmail.com"}]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+]
+requires-python = ">=2.7"
+dynamic = ["version"]
+
+[project.urls]
+Source = "https://github.com/jerakin/colors.py"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.hatch.version]
+path = "colors/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["/colors"]
+
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
