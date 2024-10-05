@@ -2,12 +2,14 @@
 > [!IMPORTANT]
 > Version 1.0.0 changes supported version too >=3.7
 
-_These changes are still not in the main repo_
+_These changes are still not in the upstream repo_
 * Test suite
 * Fully type hinted
 * [#9](https://github.com/mattrobenolt/colors.py/pull/9) Support for Python 3
 * [#10](https://github.com/mattrobenolt/colors.py/pull/10) RGBColor is strictly 24bit (rounds the rgb input)
-* Added RGBFloatColor that represent colors in a 0.0 - 1.0 range
+* Added RGBFloatColor that represent colors in a 0.0 - 1.0 range (however, it doesn't enforce it to be clamped)
+* Separation between arithmetics and blend modes. Operators returns non-clamped RGBFloatColor.
+Blend mode returns the same color type as the caller.
 
 # colors.py
 Convert colors between rgb, hsv, and hex, perform arithmetic, blend modes, and generate random colors within boundaries
@@ -30,57 +32,65 @@ Or create an alias.
 ### Create an RGB color object
 ```python
 >>> colors.RGBColor(100, 100, 100)
-<RGBColor red: 100, green: 100, blue: 100>
+RGBColor(r=100, g=100, b=100)
 ```
 ### Convert it to hexadecimal
 ```python
->>> colors.HexColor(100, 100, 100).hex
-<HexColor red: 64, green: 64, blue: 64>
+colors.HexColor(100, 100, 100).hex
+HexColor("646464")
 ```
 ### Coerce the hexadecimal to a normal string
 ```python
 >>> str(colors.RGBColor(100, 100, 100).hex)
 646464
 ```
+
 ### Create a Hexadecimal color object
 ```python
 >>> colors.HexColor('646464')
-<HexColor red: 64, green: 64, blue: 64>
+HexColor("646464")
 ```
+
 ### Extract the red/green/blue value from a hexadecimal
 ```python
 >>> colors.HexColor('646464').rgb.red
 100
 ```
+
 ### Convert a hexadecimal to HSV
 ```python
 >>> colors.HexColor('646464').hsv
-<HSVColor hue: 0.0, saturation: 0.0, value: 0.392156862745>
+HSVColor(h=0.0, s=0.0, v=0.392156862745)
 ```
+
 ### Coerce hsv/rgb values to a list/tuple of values
 ```python
 >>> list(colors.HexColor('646464').hsv)
 [0.0, 0.0, 0.39215686274509803]
 ```
+
 ### Create an HSV color object
 ```python
 >>> colors.HSVColor(0, 1, 1)
-<HSVColor hue: 0, saturation: 1, value: 1>
+HSVColor(h=0, s=1, v=1)
 ```
+
 ### Convert it to RGB
 ```python
 >>> colors.HSVColor(0, 1, 1).rgb
-<RGBColor red: 255, green: 0, blue: 0>
+RGBColor(r=255, g=0, b=0)
 ```
+
 ### Create an float RGB color object
 ```python
 >>> colors.RGBFloatColor(0.5, 0.5, 0.5)
-<RGBFloatColor red: 0.5, green: 0.5, blue: 0.5>
+RGBFloatColor(r=0.5, g=0.5, b=0.5)
 ```
+
 ### Convert it to RGB
 ```python
 >>> colors.RGBFloatColor(0.5, 0.5, 0.5).rgb
-<RGBColor red: 128, green: 128, blue: 128>
+RGBColor(r=128, g=128, b=128)
 ```
 ### Coerce a hexadecimal color to a string with formatting
 ```python
@@ -101,91 +111,107 @@ True
 True
 ```
 ## Arithmetic
-**Note**: All arithmetic operations return `rgb` color.
+> [!IMPORTANT]
+> All operators (`+`, `-`, `/`, `*`) returns non-clamped RGBFloatColor.
+
 ### Multiply
 ```python
 >>> colors.HexColor('ff9999') * colors.HexColor('cccccc')
-<RGBColor red: 204, green: 122, blue: 122>
-
->>> colors.HexColor
-<HexColor red: cc, green: 7a, blue: 7a>
-
->>> colors.RGBColor(100, 100, 100).multiply(colors.hsv(0, 1, 1)).hex
-<HexColor red: 64, green: 00, blue: 00>
+RGBFloatColor(r=0.8, g=0.48, b=0.48)
 ```
+
 ### Add
 ```python
 >>> colors.HexColor('ff9999') + colors.RGBColor(10, 10, 10)
-<RGBColor red: 255, green: 163, blue: 163>
-
->>> colors.HexColor('aaffcc').add(colors.RGBColor(10, 10, 10))
-<RGBColor red: 180, green: 255, blue: 214>
+RGBFloatColor(r=1.0392156862745099, g=0.6392156862745098, b=0.6392156862745098)
 ```
+
 ### Subtract
 ```python
 >>> colors.HexColor('ff9999') - colors.RGBColor(10, 10, 10)
-<RGBColor red: 245, green: 143, blue: 143>
+RGBFloatColor(r=0.9607843137254902, g=0.5607843137254902, b=0.5607843137254902)
 
->>> colors.HexColor('aaffcc').subtract(colors.RGBColor(10, 10, 10))
-<RGBColor red: 160, green: 245, blue: 194>
 ```
+
 ### Divide
 ```python
 >>> colors.HexColor('ff9999') / colors.RGBColor(10, 10, 10)
-<RGBColor red: 26, green: 15, blue: 15>
-
->>> colors.HexColor('aaffcc').divide(colors.RGBColor(10, 10, 10))
-<RGBColor red: 17, green: 26, blue: 20>
-
->>> colors.RGBColor(100, 100, 100) / hex('00ffff')
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "colors.py", line 73, in divide
-    raise ZeroDivisionError
-ZeroDivisionError
+RGBFloatColor(r=25.5, g=15.299999999999999, b=15.299999999999999)
 ```
+
 ## Blend Modes
-**Note**: All blend modes return `RGBColor`.
+> [!NOTE]
+> The type of the Color returned is the same type as the caller.
+
 ### Screen
 ```python
->>> colors.HexColor('ff9999').screen(colors.RGBColor(10, 10, 10)).hex
-<HexColor red: ff, green: 9d, blue: 9d>
+>>> colors.HexColor('ff9999').screen(colors.RGBColor(10, 10, 10))
+HexColor("ff9d9d")
 ```
+
 ### Difference
 ```python
->>> colors.HexColor('ff9999').difference(colors.RGBColor(10, 10, 10)).hex
-<HexColor red: f5, green: 8f, blue: 8f>
+>>> colors.HexColor('ff9999').difference(colors.RGBColor(10, 10, 10))
+HexColor("f58f8f")
 ```
 ### Overlay
 ```python
->>> colors.HexColor('ff9999').overlay(colors.RGBColor(10, 10, 10)).hex
-<HexColor red: ff, green: 9b, blue: 9b>
+>>> colors.HexColor('ff9999').overlay(colors.RGBColor(10, 10, 10))
+HexColor("ff9b9b")
 ```
+
 ### Invert
 ```python
 >>> colors.HexColor('000000').invert()
-<RGBColor red: 255, green: 255, blue: 255>
+HexColor("ffffff")
 ```
+
+### Color Dodge
+```python
+>>> RGBColor(195, 49, 171).color_dodge(RGBColor(14, 19, 14))
+RGBColor(59, 24, 42)
+```
+
+### Linear Dodge
+```python
+>>> RGBColor(195, 49, 171).linear_dodge(RGBColor(14, 19, 14))
+RGBColor(209, 68, 185)
+```
+
+### Color Burn
+```python
+>>> RGBColor(195, 49, 171).color_burn(RGBColor(107, 194, 145))
+RGBColor(61, 0, 91)
+```
+
+### Linear Burn
+```python
+>>>  RGBColor(195, 49, 171).linear_burn(RGBColor(107, 194, 145))
+RGBColor(47, 0, 61)
+```
+
 ## Color palettes
 `colors.py` current ships with three color palettes full of constants. See source for all available colors.
 ### `colors.primary`
 ```python
 >>> import colors.primary
 >>> colors.primary.red
-<RGBColor red: 255, green: 0, blue: 0>
+RGBColor(r=255, g=0, b=0)
 ```
 ### `colors.rainbow`
 ```python
 >>> import colors.rainbow
 >>> colors.rainbow.indigo
-<RGBColor red: 75, green: 0, blue: 130>
+RGBColor(r=75, g=0, b=130)
 ```
+
 ### `colors.w3c`
 ```python
 >>> import colors.w3c
 >>> colors.w3c.ghostwhite
 <RGBColor red: 248, green: 248, blue: 255>
 ```
+
 ## The Color Wheel!
 The color wheel allows you to randomly choose colors while keeping the colors relatively evenly distributed. Think generating random colors without pooling in one hue, e.g., not 50 green, and 1 red.
 ```python
