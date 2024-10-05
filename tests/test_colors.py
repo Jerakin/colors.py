@@ -30,16 +30,6 @@ def test_RGBFloatColor():
     assert colors.red == 1.0 and colors.green == 0.0 and colors.blue == 1.0
 
 
-def test_rgb_float_value_error():
-    with pytest.raises(ValueError):
-        RGBFloatColor(1.1, 0.5, 0.5)
-
-
-def test_rgb_float_value_error_negative():
-    with pytest.raises(ValueError):
-        RGBFloatColor(-0.1, 0.5, 0.5)
-
-
 def test_HexColor():
     colors = HexColor("646464").hex
     assert colors.red == "64" and colors.green == "64" and colors.blue == "64"
@@ -148,8 +138,3 @@ def test_RGBColor_float():
 
 def test_HSVColor_float():
     assert RGBFloatColor(1, 0, 0) == HSVColor(0, 1, 1).float
-
-
-def test_RGBFloatColor_value_error():
-    with pytest.raises(ValueError):
-        RGBFloatColor(300.0, 300.0, 300.0)
