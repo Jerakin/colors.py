@@ -1,9 +1,12 @@
 ## Changes from mattrobenolt/colors.py
+> [!IMPORTANT]
+> Version 1.0.0 changes supported version too >=3.7
+
 _These changes are still not in the main repo_
-* Test suite 
+* Test suite
+* Fully type hinted
 * [#9](https://github.com/mattrobenolt/colors.py/pull/9) Support for Python 3
-* [#9](https://github.com/mattrobenolt/colors.py/pull/9) Using decorators instead of metaclass (to keep it simple)
-* [#10](https://github.com/mattrobenolt/colors.py/pull/10) RGBColor is strictly 24bit (rounds the rgb input to)
+* [#10](https://github.com/mattrobenolt/colors.py/pull/10) RGBColor is strictly 24bit (rounds the rgb input)
 * Added RGBFloatColor that represent colors in a 0.0 - 1.0 range
 
 # colors.py
