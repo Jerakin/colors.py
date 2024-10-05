@@ -3,12 +3,12 @@ colors.rainbow
 ==============
 ROYGBIV!
 """
-from .base import rgb
+from .base import RGBColor
 
-red = rgb(255, 0, 0)
-orange = rgb(255, 165, 0)
-yellow = rgb(255, 255, 0)
-green = rgb(0, 128, 0)
-blue = rgb(0, 0, 255)
-indigo = rgb(75, 0, 130)
-violet = rgb(238, 130, 238)
+red = RGBColor(255, 0, 0)
+orange = RGBColor(255, 165, 0)
+yellow = RGBColor(255, 255, 0)
+green = RGBColor(0, 128, 0)
+blue = RGBColor(0, 0, 255)
+indigo = RGBColor(75, 0, 130)
+violet = RGBColor(238, 130, 238)

@@ -1,19 +1,19 @@
-from colors import RGBColor as rgb
+from colors import RGBColor
 
 
 def test_primary():
     import colors.primary
-    assert colors.primary.red == rgb(255, 0, 0)
+    assert colors.primary.red == RGBColor(255, 0, 0)
 
 
 def test_rainbow():
     import colors.rainbow
-    assert colors.rainbow.indigo == rgb(75, 0, 130)
+    assert colors.rainbow.indigo == RGBColor(75, 0, 130)
 
 
 def test_w3c():
     import colors.w3c
-    assert colors.w3c.ghostwhite == rgb(248, 248, 255)
+    assert colors.w3c.ghostwhite == RGBColor(248, 248, 255)
 
 
 

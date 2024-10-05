@@ -2,10 +2,10 @@
 colors.primary
 ==============
 """
-from .base import rgb
+from .base import RGBColor
 
-black = rgb(0, 0, 0)
-white = rgb(255, 255, 255)
-red = rgb(255, 0, 0)
-green = rgb(0, 255, 0)
-blue = rgb(0, 0, 255)
+black = RGBColor(0, 0, 0)
+white = RGBColor(255, 255, 255)
+red = RGBColor(255, 0, 0)
+green = RGBColor(0, 255, 0)
+blue = RGBColor(0, 0, 255)
