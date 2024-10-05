@@ -7,10 +7,14 @@ and generate random colors within boundaries.
 from __future__ import annotations
 import colorsys
 import random as random_
+import logging
+from numbers import Integral
 
-__all__ = ('Color', 'HSVColor', 'RGBColor', "RGBFloatColor", 'HexColor', 'ColorWheel')
+__all__ = ("Color", "HSVColor", "RGBColor", "RGBFloatColor", "HexColor", "ColorWheel")
 
-HEX_RANGE = frozenset('0123456789abcdef')
+HEX_RANGE = frozenset("0123456789abcdef")
+
+logger = logging.getLogger("colors.py")
 
 
 class Color:
@@ -20,7 +24,7 @@ class Color:
     @property
     def hex(self) -> HexColor:
         """ Hex is used the same way for all types. """
-        return HexColor('{:02x}{:02x}{:02x}'.format(*[int(x) for x in self.rgb]))
+        return HexColor("{:02x}{:02x}{:02x}".format(*[int(x) for x in self.rgb]))
 
     @property
     def rgb(self):
@@ -119,7 +123,7 @@ class Color:
         return len(self._color)
 
     def __str__(self) -> str:
-        return ', '.join(map(str, self._color))
+        return ", ".join(map(str, self._color))
 
 
 class HSVColor(Color):
@@ -127,9 +131,9 @@ class HSVColor(Color):
 
     def __init__(self, h=0.0, s=0.0, v=0.0):
         if s > 1:
-            raise ValueError('Saturation has to be less than 1')
+            raise ValueError("Saturation has to be less than 1")
         if v > 1:
-            raise ValueError('Value has to be less than 1')
+            raise ValueError("Value has to be less than 1")
 
         # Hue can safely circle around 1
         if h >= 1:
@@ -182,9 +186,12 @@ class RGBColor(Color):
 
     def __init__(self, r: int = 0, g: int = 0, b: int = 0):
         self._color = [round(r), round(g), round(b)]
-        for c in self._color:
-            if 0 > c or c > 255:
-                raise ValueError('Color values must be between 0 and 255')
+
+        for i, c in enumerate([r, g, b]):
+            if not isinstance(c, Integral) and not c.is_integer():
+                logger.warning("%s = %s value is not an integer, it will be rounded to %s.", "rgb"[i], c, round(c))
+            if not 0 <= c <= 255:
+                raise ValueError("Color values must be between 0 and 255 (is %s)", c)
 
     def __repr__(self) -> str:
         return f"RGBColor(r={self.red}, g={self.green}, b={self.blue})"
@@ -231,8 +238,8 @@ class RGBFloatColor(Color):
     def __init__(self, r: float = 0.0, g: float = 0.0, b: float = 0.0):
         self._color =  [r, g, b]
         for c in self._color:
-            if 0 > c or c > 1:
-                raise ValueError('Color values must be between 0 and 1')
+            if not 0 <= c <= 1:
+                raise ValueError("Color values must be between 0 and 1")
 
     def __repr__(self) -> str:
         return f"RGBFloatColor(r={self.red}, g={self.green}, b={self.blue})"
@@ -279,18 +286,18 @@ class HexColor(RGBColor):
 
     Warning: accuracy is lost when converting a color to hex
     """
-    def __init__(self, _hex='000000'):
-        if not type(_hex) == str:
+    def __init__(self, _hex="000000"):
+        if not isinstance(_hex, str):
             raise ValueError("Hex must be string")
 
         if len(_hex) != 6:
-            raise ValueError('Hex color must be 6 digits')
+            raise ValueError("Hex color must be 6 digits")
 
         _hex = _hex.lower()
         if not set(_hex).issubset(HEX_RANGE):
-            raise ValueError('Not a valid hex number')
+            raise ValueError("Not a valid hex number")
 
-        self._color = _hex[:2], _hex[2:4], _hex[4:6]
+        self._color = [_hex[:2], _hex[2:4], _hex[4:6]]
 
     @property
     def rgb(self) -> RGBColor:
@@ -309,11 +316,11 @@ class HexColor(RGBColor):
         return RGBFloatColor(*[int(c, 16)/255.0 for c in self._color])
 
     def __str__(self) -> str:
-        return '{}{}{}'.format(*self._color)
+        return "{}{}{}".format(*self._color)
 
 
 class ColorWheel:
-    """ Iterate random colors distributed relatively evenly around the color wheel."""
+    """Iterate random colors distributed relatively evenly around the color wheel."""
     def __init__(self, start: float = 0):
         # A 1.1 shift is identical to 0.1
         if start >= 1:
